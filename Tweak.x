@@ -15,7 +15,8 @@
 // ============ 配置 ============
 static NSString *const kPrefsPath =
     @"/var/jb/var/mobile/Library/Preferences/com.yourname.carplaylatencykiller.plist";
-static NSString *const kCarPortType = AVAudioSessionPortCarAudio; // "CarAudio"
+// 注意：AVAudioSessionPortCarAudio 是运行时符号，不能用于全局 static const 初始化，
+// 需在函数内比较（见 IsCarPlayActive）。
 
 // ============ 运行时状态 ============
 static BOOL gCarPlayActive    = NO;   // 当前输出是否为 CarPlay（由路由变化通知实时更新）
@@ -53,7 +54,7 @@ static void LoadPrefs(void) {
 static BOOL IsCarPlayActive(void) {
     AVAudioSession *s = [AVAudioSession sharedInstance];
     for (AVAudioSessionPortDescription *p in s.currentRoute.outputs) {
-        if ([p.portType isEqualToString:kCarPortType]) return YES;
+        if ([p.portType isEqualToString:AVAudioSessionPortCarAudio]) return YES; // 运行时符号
     }
     return NO;
 }
