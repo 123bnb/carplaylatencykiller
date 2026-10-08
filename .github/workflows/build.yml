@@ -14,10 +14,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Clone Theos
-        # --recursive 拉全 vendor 子模块（含打包用的 dm.pl、ldid）。
-        # 编译用 runner 自带 Xcode SDK（Makefile 已用 TARGET=latest），sdks 子模块即使拉不全也不影响。
-        run: git clone --recursive --depth=1 https://github.com/theos/theos.git "$THEOS"
+      - name: Clone Theos (roothide fork)
+        # 必须用 RootHide 的 Theos fork（github.com/roothide/theos）编译，
+        # 标准 theos 只能编 rootless，Sileo 会判定“不是 roothide”。
+        # --recursive 拉全 vendor 子模块（含 dm.pl、ldid、libroothide）。
+        # 编译用 runner 自带 Xcode SDK（Makefile 已用 TARGET=latest）。
+        run: git clone --recursive --depth=1 https://github.com/roothide/theos.git "$THEOS"
 
       - name: Install dpkg & ldid
         # macOS runner 默认无 dpkg（打 deb 依赖）与 ldid（签名依赖）。

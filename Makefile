@@ -8,8 +8,10 @@
 TARGET := iphone:clang:latest:15.0
 INSTALL_TARGET_PROCESSES := SpringBoard
 
-# RootHide 使用 rootless 架构（/var/jb）。若你的环境是纯 rootless 也一致。
-THEOS_PACKAGE_SCHEME := rootless
+# RootHide 必须用 roothide scheme（配合 roothide Theos fork）编译，
+# 这样 deb 才带 .jbroot 加载路径，Sileo 才会识别为 roothide 插件。
+# 普通 rootless 包会被 Sileo 拒绝，且转换工具不可靠。
+THEOS_PACKAGE_SCHEME := roothide
 
 ARCHS = arm64 arm64e
 
