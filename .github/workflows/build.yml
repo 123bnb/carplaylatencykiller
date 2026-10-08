@@ -15,10 +15,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Clone Theos
+        # --recursive 会把 sdks 子模块一并拉取到 $THEOS/sdks，无需再单独 clone。
         run: git clone --recursive --depth=1 https://github.com/theos/theos.git "$THEOS"
-
-      - name: Clone iOS SDKs
-        run: git clone --depth=1 https://github.com/theos/sdks.git "$THEOS/sdks"
 
       - name: Build package
         run: make clean package FINALPACKAGE=1
