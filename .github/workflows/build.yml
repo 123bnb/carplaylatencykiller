@@ -15,14 +15,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Clone Theos (roothide fork)
-        # 必须用 RootHide 的 Theos fork（github.com/roothide/theos）编译，
-        # 标准 theos 只能编 rootless，Sileo 会判定“不是 roothide”。
-        # --recursive 拉全 vendor 子模块（含 dm.pl、ldid、libroothide）。
-        # 编译用 runner 自带 Xcode SDK（Makefile 已用 TARGET=latest）。
         run: git clone --recursive --depth=1 https://github.com/roothide/theos.git "$THEOS"
 
+      - name: Get patched iOS 16.5 SDK (contains private Preferences framework)
+        # 新版 Xcode 自带 SDK 删除了 Preferences 私有框架/头，必须用 theos/sdks 的
+        # patched SDK（含私有框架），设置页才能 import 真头并链接，复刻成功案例环境。
+        uses: actions/checkout@v4
+        with:
+          repository: theos/sdks
+          sparse-checkout: iPhoneOS16.5.sdk
+          path: theos/sdks
+
       - name: Install dpkg & ldid
-        # macOS runner 默认无 dpkg（打 deb 依赖）与 ldid（签名依赖）。
         run: brew install dpkg ldid
 
       - name: Build package

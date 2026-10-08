@@ -1,26 +1,18 @@
-#import <UIKit/UIKit.h>
+#import <Preferences/PSListController.h>
+#import <Preferences/PSSpecifier.h>
 
-// Preferences.framework 是新版 Xcode SDK 不再自带的私有框架，且无需链接——
-// 设置页运行在 Preferences.app 进程内，PSListController 由它运行时提供。
-// 这里自声明所需接口，链接用 -undefined dynamic_lookup 放行未定义符号。
-@interface PSListController : UIViewController
-- (id)loadSpecifiersFromPlistName:(NSString *)plistName target:(id)target;
-@end
-
-// 注意：不要使用 _specifiers 这个变量名——它会与运行时父类 PSListController
-// 自带的 _specifiers 同名冲突，导致系统列表读到空。这里用独立变量名缓存。
-@interface RootListController : PSListController {
-    NSArray *_cachedSpecs;
-}
+// 标准设置页 controller：从 bundle 的 Root.plist 加载设置项。
+// 用 patched SDK 的真 Preferences 头 + ARC，与能正常显示的工程写法一致。
+@interface RootListController : PSListController
 @end
 
 @implementation RootListController
 
-- (id)specifiers {
-    if (_cachedSpecs == nil) {
-        _cachedSpecs = [[self loadSpecifiersFromPlistName:@"Root" target:self] retain];
+- (NSMutableArray *)specifiers {
+    if (!_specifiers) {
+        _specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
     }
-    return _cachedSpecs;
+    return _specifiers;
 }
 
 @end

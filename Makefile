@@ -2,10 +2,9 @@
 # 目标：仅 CarPlay 环境下，对指定 App 做“音频预热 + 可选低延迟路径”，
 #       消除抖音等视频 App 在无线 CarPlay 上的“出声慢 / 音画延迟”问题。
 
-# SDK 用 latest：让 theos 自动探测 macOS runner 自带的 Xcode iOS SDK，
-# 不再依赖下载 theos/sdks（SDK 用 Git LFS，浅克隆常拿不全）。
-# deployment 15.0 保证兼容 iOS 16.4.1。
-TARGET := iphone:clang:latest:15.0
+# 用 theos/sdks 的 patched iPhoneOS16.5.sdk（CI 已下载），它含 Preferences
+# 私有框架/头（新版 Xcode SDK 已删除）。deployment 15.0 保证兼容 iOS 16.4.1。
+TARGET := iphone:clang:16.5:15.0
 INSTALL_TARGET_PROCESSES := SpringBoard
 
 # RootHide 必须用 roothide scheme（配合 roothide Theos fork）编译，
