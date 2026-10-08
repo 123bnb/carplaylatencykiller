@@ -6,4 +6,4 @@ Description: 仅 CarPlay 环境下，对指定 App 做音频预热与可选低�
 Maintainer: yourname
 Author: yourname
 Section: Tweaks
-Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 15.0)
+Depends: preferenceloader, mobilesubstrate (>= 0.9.5000), firmware (>= 15.0)
