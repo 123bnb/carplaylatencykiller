@@ -1,0 +1,9 @@
+Package: com.yourname.carplaylatencykiller
+Name: CarPlay Latency Killer
+Version: 0.1.0
+Architecture: iphoneos-arm64
+Description: 仅 CarPlay 环境下，对指定 App 做音频预热与可选低延迟路径，消除无线 CarPlay 出声慢 / 音画延迟。
+Maintainer: yourname
+Author: yourname
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 15.0)
