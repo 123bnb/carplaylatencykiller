@@ -11,9 +11,8 @@ BUNDLE_NAME = CarPlayLatencyKiller
 
 CarPlayLatencyKiller_FILES = RootListController.m
 CarPlayLatencyKiller_INSTALL_PATH = /Library/PreferenceBundles
-CarPlayLatencyKiller_PRIVATE_FRAMEWORKS = Preferences
-# 用 Xcode SDK 时，Theos 不会自动把 PrivateFrameworks 目录加进链接搜索路径，
-# 手动补上，否则找不到 Preferences.framework。
-CarPlayLatencyKiller_LDFLAGS = -F$(shell xcrun --sdk iphoneos --show-sdk-path)/System/Library/PrivateFrameworks
+# 不链接 Preferences.framework（新版 Xcode SDK 已不含该私有框架），
+# 设置页运行在 Preferences.app 进程内，PSListController 由它运行时提供。
+CarPlayLatencyKiller_LDFLAGS = -undefined dynamic_lookup
 
 include $(THEOS_MAKE_PATH)/bundle.mk
