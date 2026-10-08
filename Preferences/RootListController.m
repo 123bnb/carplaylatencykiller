@@ -6,48 +6,47 @@
 
 @implementation RootListController
 
+// 手动构建 specifier，绕过在本机返回 0 的 loadSpecifiersFromPlistName。
 - (NSMutableArray *)specifiers {
     if (!_specifiers) {
-        _specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
+        NSMutableArray *built = [NSMutableArray array];
+        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+        NSString *path = [bundle pathForResource:@"Root" ofType:@"plist"];
+        NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:path];
+
+        for (NSDictionary *entry in plist[@"PreferenceSpecifiers"]) {
+            NSString *cellStr = entry[@"cell"];
+            PSCellType cellType = PSLinkCell;
+            if ([cellStr isEqualToString:@"PSGroupCell"]) cellType = PSGroupCell;
+            else if ([cellStr isEqualToString:@"PSSwitchCell"]) cellType = PSSwitchCell;
+            else if ([cellStr isEqualToString:@"PSEditTextCell"]) cellType = PSEditTextCell;
+
+            PSSpecifier *spec = [PSSpecifier preferenceSpecifierNamed:entry[@"label"]
+                                                              target:self
+                                                                 set:@selector(setPreferenceValue:specifier:)
+                                                                 get:@selector(readPreferenceValue:)
+                                                              detail:Nil
+                                                                cell:cellType
+                                                                edit:Nil];
+            if (spec) {
+                [spec setProperties:[entry mutableCopy]];
+                [built addObject:spec];
+            }
+        }
+        _specifiers = built;
     }
     return _specifiers;
 }
 
-// 增强诊断：把 bundle / Root.plist / specifier 加载情况直接显示在页面上。
+// 临时诊断：显示手动构建出的数量。
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    NSMutableString *info = [NSMutableString string];
-    NSBundle *b = [NSBundle bundleForClass:[self class]];
-    [info appendFormat:@"1) bundlePath:\n%@\n\n", b.bundlePath];
-
-    NSString *path = [b pathForResource:@"Root" ofType:@"plist"];
-    [info appendFormat:@"2) pathForResource Root.plist: %@\n\n", path ? @"找到了" : @"NIL（找不到）"];
-
-    if (path) {
-        NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:path];
-        [info appendFormat:@"3) plist 顶层键: %@\n", plist.allKeys];
-        NSArray *specs = plist[@"PreferenceSpecifiers"];
-        [info appendFormat:@"   PreferenceSpecifiers 数量: %lu\n\n", (unsigned long)specs.count];
-    }
-
-    NSArray *loaded = [self loadSpecifiersFromPlistName:@"Root" target:self];
-    [info appendFormat:@"4) loadSpecifiersFromPlistName 返回数量: %lu\n\n", (unsigned long)loaded.count];
-
-    NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:b.bundlePath error:nil];
-    [info appendFormat:@"5) bundle 目录实际内容:\n%@\n", contents];
-
-    // 也查一下 Resources 子目录
-    NSString *resDir = [b.bundlePath stringByAppendingPathComponent:@"Resources"];
-    NSArray *resContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:resDir error:nil];
-    [info appendFormat:@"\n6) Resources 子目录: %@\n", resContents ?: @"不存在"];
-
-    UITextView *tv = [[UITextView alloc] initWithFrame:CGRectMake(0, 70, self.view.bounds.size.width, self.view.bounds.size.height - 70)];
-    tv.text = info;
-    tv.font = [UIFont systemFontOfSize:11];
-    tv.editable = NO;
-    tv.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:tv];
+    UILabel *diag = [[UILabel alloc] initWithFrame:CGRectMake(16, 90, 340, 60)];
+    diag.numberOfLines = 0;
+    diag.text = [NSString stringWithFormat:@"手动构建 specifier 数量：%lu", (unsigned long)self.specifiers.count];
+    diag.textColor = [UIColor redColor];
+    diag.font = [UIFont boldSystemFontOfSize:15];
+    [self.view addSubview:diag];
 }
 
 @end
