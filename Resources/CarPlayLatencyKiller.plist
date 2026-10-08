@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Filter</key>
+	<dict>
+		<!-- 空 Filter = 全局注入所有 App 进程。
+		     是否干预由运行时判断：当前输出是 CarPlay 且该 App 在白名单内。
+		     这样白名单里任意 App 都能生效。 -->
+	</dict>
+</dict>
+</plist>
