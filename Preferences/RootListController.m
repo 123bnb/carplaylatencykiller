@@ -6,7 +6,10 @@
 
 @implementation RootListController
 
-// 手动构建 specifier，绕过在本机返回 0 的 loadSpecifiersFromPlistName。
+// 手动从 Root.plist 构建 specifier。
+// 说明：本机/roothide 下 loadSpecifiersFromPlistName:target: 会返回 0（plist 字典
+// 无法被系统方法转换成 PSSpecifier），因此这里手动遍历 PreferenceSpecifiers，
+// 用 PSSpecifier 标准类方法逐个创建。
 - (NSMutableArray *)specifiers {
     if (!_specifiers) {
         NSMutableArray *built = [NSMutableArray array];
@@ -36,17 +39,6 @@
         _specifiers = built;
     }
     return _specifiers;
-}
-
-// 临时诊断：显示手动构建出的数量。
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    UILabel *diag = [[UILabel alloc] initWithFrame:CGRectMake(16, 90, 340, 60)];
-    diag.numberOfLines = 0;
-    diag.text = [NSString stringWithFormat:@"手动构建 specifier 数量：%lu", (unsigned long)self.specifiers.count];
-    diag.textColor = [UIColor redColor];
-    diag.font = [UIFont boldSystemFontOfSize:15];
-    [self.view addSubview:diag];
 }
 
 @end
