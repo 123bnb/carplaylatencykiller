@@ -27,5 +27,8 @@ CarPlayLatencyKiller_CFLAGS = -fobjc-arc -Wno-unused-variable
 CarPlayLatencyKiller_PRIVATE_FRAMEWORKS = MediaPlayer
 
 include $(THEOS_MAKE_PATH)/tweak.mk
-# 设置页使用纯 plist 资源（layout/ 下），无需独立编译子工程。
+
+# 设置页：由 Preferences 子工程编译成可执行 bundle（RootListController）。
+SUBPROJECTS += Preferences
+
 include $(THEOS_MAKE_PATH)/aggregate.mk

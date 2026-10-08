@@ -10,8 +10,6 @@
 		<string>CarPlay Latency Killer</string>
 		<key>plist</key>
 		<string>Root</string>
-		<key>icon</key>
-		<string>icon.png</string>
 	</dict>
 </dict>
 </plist>
