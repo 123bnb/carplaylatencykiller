@@ -7,18 +7,20 @@
 - (id)loadSpecifiersFromPlistName:(NSString *)plistName target:(id)target;
 @end
 
+// 注意：不要使用 _specifiers 这个变量名——它会与运行时父类 PSListController
+// 自带的 _specifiers 同名冲突，导致系统列表读到空。这里用独立变量名缓存。
 @interface RootListController : PSListController {
-    NSArray *_specifiers;
+    NSArray *_cachedSpecs;
 }
 @end
 
 @implementation RootListController
 
 - (id)specifiers {
-    if (_specifiers == nil) {
-        _specifiers = [[self loadSpecifiersFromPlistName:@"Root" target:self] retain];
+    if (_cachedSpecs == nil) {
+        _cachedSpecs = [[self loadSpecifiersFromPlistName:@"Root" target:self] retain];
     }
-    return _specifiers;
+    return _cachedSpecs;
 }
 
 @end
