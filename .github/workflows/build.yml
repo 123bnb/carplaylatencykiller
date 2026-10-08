@@ -18,6 +18,10 @@ jobs:
         # 用 runner 自带 Xcode SDK（Makefile 已用 TARGET=latest），无需拉 sdks 子模块。
         run: git clone --depth=1 https://github.com/theos/theos.git "$THEOS"
 
+      - name: Install dpkg & ldid
+        # macOS runner 默认无 dpkg（打 deb 依赖）与 ldid（签名依赖）。
+        run: brew install dpkg ldid
+
       - name: Build package
         run: make clean package FINALPACKAGE=1
 
