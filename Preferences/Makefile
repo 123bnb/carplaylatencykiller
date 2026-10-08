@@ -10,6 +10,7 @@ include $(THEOS_MAKE_PATH)/common.mk
 BUNDLE_NAME = CarPlayLatencyKiller
 
 CarPlayLatencyKiller_FILES = RootListController.m
+CarPlayLatencyKiller_FRAMEWORKS = UIKit
 CarPlayLatencyKiller_INSTALL_PATH = /Library/PreferenceBundles
 # 不链接 Preferences.framework（新版 Xcode SDK 已不含该私有框架），
 # 设置页运行在 Preferences.app 进程内，PSListController 由它运行时提供。
